@@ -1,0 +1,565 @@
+/*
+ * Pinky - 1 of 111001100110110111
+ *
+ * Pinky is a binary clock based on CSS3, HTML and oldschool JavaScript.
+ *
+ * 2012 by Tim Pietrusky - www.tim-pietrusky.de
+ * Free for all and everything.
+ *
+ */
+
+@import url(http://fonts.googleapis.com/css?family=Revalia);
+
+* {
+    /* http://paulirish.com/2012/box-sizing-border-box-ftw/ */
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    height:100%;
+    margin:0;
+    padding:0;
+
+    background:#000;
+
+    font-family: 'Revalia', cursive;
+    overflow:hidden;
+}
+
+.imabackground {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+
+  background: url(../img/bg_171717.png);
+  opacity:.6;
+}
+
+.left, .right  {
+    position:fixed;
+    z-index:1337;
+}
+
+.left {
+    left:10px;
+    bottom:10px;
+}
+
+.right {
+    right: 10px;
+    bottom: 10px;
+}
+
+.btn {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:#ededed;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    color:#777777;
+    font-family:arial;
+    font-size:18px;
+    font-weight:bold;
+    padding:3px 15px;
+    text-decoration:none;
+    text-shadow:1px 1px 0px #ffffff;
+    opacity:.1;
+
+  -webkit-transition:all .4s ease-in-out;
+     -moz-transition:all .4s ease-in-out;
+      -ms-transition:all .4s ease-in-out;
+       -o-transition:all .4s ease-in-out;
+          transition:all .4s ease-in-out;
+}
+
+.btn:hover {opacity:1;}
+
+.btn[disabled]:hover {opacity:.1;}
+
+.btn:active {
+    position:relative;
+    top:1px;
+    opacity:1;
+}
+
+
+
+#binary {
+    height:100%;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index:2;
+
+  -webkit-transition: all .7s ease-in;
+     -moz-transition: all .7s ease-in;
+      -ms-transition: all .7s ease-in;
+       -o-transition: all .7s ease-in;
+          transition: all .7s ease-in;
+
+  -webkit-transform-origin: 50% 0;
+     -moz-transform-origin: 50% 0;
+      -ms-transform-origin: 50% 0;
+       -o-transform-origin: 50% 0;
+          transform-origin: 50% 0;
+}
+
+#binary.rotated {
+    margin-top:10%;
+
+  -webkit-transform-origin: 50% 300px;
+     -moz-transform-origin: 50% 300px;
+      -ms-transform-origin: 50% 300px;
+       -o-transform-origin: 50% 300px;
+          transform-origin: 50% 300px;
+
+  -webkit-transform: rotate(90deg) scale(1.65,1.65);
+     -moz-transform: rotate(90deg) scale(1.65,1.65);
+      -ms-transform: rotate(90deg) scale(1.65,1.65);
+       -o-transform: rotate(90deg) scale(1.65,1.65);
+          transform: rotate(90deg) scale(1.65,1.65);
+}
+
+#binary.rotated #active {
+    margin:50px 0 0 -10px;
+
+  -webkit-transform-origin: 0 0;
+     -moz-transform-origin: 0 0;
+      -ms-transform-origin: 0 0;
+       -o-transform-origin: 0 0;
+          transform-origin: 0 0;
+
+    /*
+     * @TODO: 20120324 [TimPietrusky] - Add -webkit-animation
+     */
+
+  -webkit-transform: rotate(-90deg) scale(1.35,1.35) translate(50px, -40px);
+     -moz-transform: rotate(-90deg) scale(1.35,1.35) translate(50px, -40px);
+      -ms-transform: rotate(-90deg) scale(1.35,1.35) translate(50px, -40px);
+       -o-transform: rotate(-90deg) scale(1.35,1.35) translate(50px, -40px);
+          transform: rotate(-90deg) scale(1.35,1.35) translate(50px, -40px);
+}
+
+.digital {
+    color:rgb(0,0,0);
+    font-size:2.4em;
+    font-family:sans;
+    margin:20px 55px 0 25px;
+    text-shadow:0 0 45px rgba(255,255,255,.6);
+
+  -webkit-animation: digital 4s infinite;
+     -moz-animation: digital 4s infinite;
+      -ms-animation: digital 4s infinite;
+       -o-animation: digital 4s infinite;
+}
+
+.hours, .minutes, .seconds {
+    float:left;
+    margin-top:50px;
+    margin-left:50px;
+    width:50px;
+    height:400px;
+
+    -webkit-transform-style: preserve-3d;
+       -moz-transform-style: preserve-3d;
+        -ms-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+}
+
+.hours {
+    margin-top:125px;
+}
+
+.hours div, .minutes div, .seconds div {
+    background:rgba(204,204,204,.5);
+    border:5px solid #333;
+
+    opacity:.85;
+    display:block;
+    height:25px;
+    width:25px;
+    margin-bottom:50px;
+
+    -webkit-perspective: 300;
+       -moz-perspective: 300;
+        -ms-perspective: 300;
+            perspective: 300;
+
+  -webkit-transition: all .5s ease-in;
+     -moz-transition: all .5s ease-in;
+      -ms-transition: all .5s ease-in;
+       -o-transition: all .5s ease-in;
+          transition: all .5s ease-in;
+
+  -webkit-box-shadow:10px 10px 15px -5px rgba(9, 9, 9, .3);
+     -moz-box-shadow:10px 10px 15px -5px rgba(9, 9, 9, .3);
+          box-shadow:10px 10px 15px -5px rgba(9, 9, 9, .3);
+
+  -webkit-transform:rotateZ(90deg);
+     -moz-transform:rotateZ(90deg);
+       -o-transform:rotateZ(90deg);
+          transform:rotateZ(90deg);
+}
+
+.hours .true, .minutes .true, .seconds .true {
+    height:50px;
+    width:50px;
+    border-radius:50px;
+
+    margin-left:-12px;
+    margin-bottom:25px;
+
+    -webkit-perspective: 800;
+       -moz-perspective: 800;
+        -ms-perspective: 800;
+            perspective: 800;
+
+  -webkit-transform:rotateZ(-90deg);
+     -moz-transform:rotateZ(-90deg);
+       -o-transform:rotateZ(-90deg);
+          transform:rotateZ(-90deg);
+
+    -webkit-animation: resize .4s 1 ease-in;
+       -moz-animation: resize .4s 1 ease-in;
+        -ms-animation: resize .4s 1 ease-in;
+         -o-animation: resize .4s 1 ease-in;
+
+/*     -webkit-filter: blur(1px);*/
+}
+
+.hours .true {
+    background:rgba(63, 63, 255, .8);
+    border:5px solid rgba(63, 63, 255, 1);
+
+    -webkit-box-shadow:0 0 25px rgba(63, 63, 255, .8);
+       -moz-box-shadow:0 0 25px rgba(63, 63, 255, .8);
+            box-shadow:0 0 25px rgba(63, 63, 255, .8);
+
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(63,63,255,1)), color-stop(100%,rgba(63,63,255,0.8)));
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(63,63,255,1) 0%,rgba(63,63,255,0.8) 100%);
+}
+
+.minutes .true {
+    background:rgba(63, 255, 63, .8);
+    border:5px solid rgba(63, 255, 63, 1);
+
+    -webkit-box-shadow:0 0 25px rgba(63, 255, 63, .8);
+       -moz-box-shadow:0 0 25px rgba(63, 255, 63, .8);
+            box-shadow:0 0 25px rgba(63, 255, 63, .8);
+
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(63,255,63,1)), color-stop(100%,rgba(63,255,63,0.8)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(63,255,63,1) 0%,rgba(63,255,63,0.8) 100%);
+}
+
+.seconds .true {
+    background:rgba(255, 63, 63, .8);
+    border:5px solid rgba(255, 63, 63, 1);
+
+    -webkit-box-shadow:0 0 25px rgba(255, 100, 100, .8);
+       -moz-box-shadow:0 0 25px rgba(255, 100, 100, .8);
+            box-shadow:0 0 25px rgba(255, 100, 100, .8);
+
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,63,63,1)), color-stop(100%,rgba(255,63,63,0.8)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,63,63,1) 0%,rgba(255,63,63,0.8) 100%);
+
+}
+
+
+#active {
+    float:left;
+    width:380px;
+    height:85px;
+
+    font-size:45px;
+    text-align:center;
+    padding:20px 5x;
+    opacity:.4;
+
+    margin:-25px 0 0 -28px;
+
+    -webkit-perspective: 400;
+       -moz-perspective: 400;
+        -ms-perspective: 400;
+            perspective: 400;
+
+  -webkit-transition: all .5s ease-in, color .2s ease-in;
+     -moz-transition: all .5s ease-in, color .2s ease-in;
+      -ms-transition: all .5s ease-in, color .2s ease-in;
+       -o-transition: all .5s ease-in, color .2s ease-in;
+          transition: all .5s ease-in, color .2s ease-in;
+
+  -webkit-transform-origin: 50% 0;
+     -moz-transform-origin: 50% 0;
+      -ms-transform-origin: 50% 0;
+       -o-transform-origin: 50% 0;
+          transform-origin: 50% 0;
+}
+
+#active.secondsx, #active.minutesx, #active.hoursx {
+    text-shadow:1px 0px 1px #222;
+    text-shadow:1px 1px 1px rgba(40, 40, 40, .7);
+}
+
+#active.secondsx {
+    color: #330000;
+
+}
+
+#active.minutesx {
+    color: #003300;
+}
+
+#active.hoursx {
+    color: #000033;
+}
+
+/**
+ *
+ * Animations
+ *
+ */
+
+/**
+ * resize
+ */
+@-webkit-keyframes resize {
+    0%, 100% {
+        height:50px;
+        width:50px;
+        opacity:1;
+    }
+    15% {opacity:.6;}
+    50% {
+        height:80px;
+        width:80px;
+        border-radius:80px;
+
+        margin-top:-15px;
+        margin-left:-27px;
+        margin-bottom:15px;
+
+        opacity:.3;
+
+        -webkit-transform:translate3d(0, -55%, 10px) scale(2);
+           -moz-transform:translate(0, -55%) scale(2);
+             -o-transform:translate3d(0, -55%, 10px) scale(2);
+                transform:translate3d(0, -55%, 10px) scale(2);
+
+        -webkit-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+           -moz-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+                box-shadow:0 0 45px rgba(255, 255, 255, .4);
+    }
+}
+
+@-moz-keyframes resize {
+    0%, 100% {
+        height:50px;
+        width:50px;
+        opacity:1;
+    }
+    15% {opacity:.6;}
+    50% {
+        height:80px;
+        width:80px;
+        border-radius:80px;
+
+        margin-top:-15px;
+        margin-left:-27px;
+        margin-bottom:15px;
+
+        opacity:.3;
+
+        -webkit-transform:translate3d(0, -55%, 10px) scale(2);
+           -moz-transform:translate(0, -55%) scale(2);
+             -o-transform:translate3d(0, -55%, 10px) scale(2);
+                transform:translate3d(0, -55%, 10px) scale(2);
+
+        -webkit-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+           -moz-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+                box-shadow:0 0 45px rgba(255, 255, 255, .4);
+    }
+}
+@-ms-keyframes resize {
+    0%, 100% {
+        height:50px;
+        width:50px;
+        opacity:1;
+    }
+    15% {opacity:.6;}
+    50% {
+        height:80px;
+        width:80px;
+        border-radius:80px;
+
+        margin-top:-15px;
+        margin-left:-27px;
+        margin-bottom:15px;
+
+        opacity:.3;
+
+        -webkit-transform:translate3d(0, -55%, 10px) scale(2);
+           -moz-transform:translate(0, -55%) scale(2);
+             -o-transform:translate3d(0, -55%, 10px) scale(2);
+                transform:translate3d(0, -55%, 10px) scale(2);
+
+        -webkit-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+           -moz-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+                box-shadow:0 0 45px rgba(255, 255, 255, .4);
+    }
+}
+@-o-keyframes resize {
+    0%, 100% {
+        height:50px;
+        width:50px;
+        opacity:1;
+    }
+    15% {opacity:.6;}
+    50% {
+        height:80px;
+        width:80px;
+        border-radius:80px;
+
+        margin-top:-15px;
+        margin-left:-27px;
+        margin-bottom:15px;
+
+        opacity:.3;
+
+        -webkit-transform:translate3d(0, -55%, 10px) scale(2);
+           -moz-transform:translate(0, -55%) scale(2);
+             -o-transform:translate3d(0, -55%, 10px) scale(2);
+                transform:translate3d(0, -55%, 10px) scale(2);
+
+        -webkit-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+           -moz-box-shadow:0 0 45px rgba(255, 255, 255, .4);
+                box-shadow:0 0 45px rgba(255, 255, 255, .4);
+    }
+}
+
+/*
+ * showhide
+ */
+@-webkit-keyframes _showhide {
+  0%, 100%   {opacity: .4;}
+  50%        {opacity: 1;}
+}
+@-moz-keyframes _showhide {
+  0%, 100%   {opacity: .4;}
+  50%        {opacity: 1;}
+}
+@-ms-keyframes _showhide {
+  0%, 100%   {opacity: .4;}
+  50%        {opacity: 1;}
+}
+@-o-keyframes _showhide {
+  0%, 100%   {opacity: .4;}
+  50%        {opacity: 1;}
+}
+
+/*
+ *
+ * MQ's
+ *
+ */
+@media only screen and (max-width:480px) {
+    #binary {
+        margin-right: 10%;
+
+        -webkit-transform:scale(.85,.85);
+           -moz-transform:scale(.85,.85);
+             -o-transform:scale(.85,.85);
+                transform:scale(.85,.85);
+    }
+
+    #binary.rotated {
+        margin-right: 10%;
+
+        -webkit-transform:rotate(90deg) scale(.65,.65);
+           -moz-transform:rotate(90deg) scale(.65,.65);
+             -o-transform:rotate(90deg) scale(.65,.65);
+                transform:rotate(90deg) scale(.65,.65);
+    }
+}
+
+@media only screen and (min-width:481px) and (max-width:1023px) {
+    #binary {
+        -webkit-transform:scale(1.35,1.35);
+           -moz-transform:scale(1.35,1.35);
+             -o-transform:scale(1.35,1.35);
+                transform:scale(1.35,1.35);
+    }
+
+    #binary.rotated {
+        margin-right:30%;
+
+        -webkit-transform:rotate(90deg) scale(1.2,1.2);
+           -moz-transform:rotate(90deg) scale(1.2,1.2);
+             -o-transform:rotate(90deg) scale(1.2,1.2);
+                transform:rotate(90deg) scale(1.2,1.2);
+    }
+}
+
+@media only screen and (min-width:1024px) and (max-width:1237px){
+    #binary {
+        -webkit-transform:scale(1.55,1.55);
+           -moz-transform:scale(1.55,1.55);
+             -o-transform:scale(1.55,1.55);
+                transform:scale(1.55,1.55);
+    }
+
+    #binary.rotated {
+        -webkit-transform:rotate(90deg) scale(1.8,1.8);
+           -moz-transform:rotate(90deg) scale(1.8,1.8);
+             -o-transform:rotate(90deg) scale(1.8,1.8);
+                transform:rotate(90deg) scale(1.8,1.8);
+    }
+}
+
+@media only screen and (min-width:1238px) {
+    #binary {
+        margin-left:40%;
+
+        -webkit-transform:scale(1.55,1.55);
+           -moz-transform:scale(1.55,1.55);
+             -o-transform:scale(1.55,1.55);
+                transform:scale(1.55,1.55);
+    }
+
+    #binary.rotated {
+        -webkit-transform:rotate(90deg) scale(2.15,2.15);
+           -moz-transform:rotate(90deg) scale(2.15,2.15);
+             -o-transform:rotate(90deg) scale(2.15,2.15);
+                transform:rotate(90deg) scale(2.15,2.15);
+    }
+}
+
+@media only screen and (min-height:980px) and (min-width:1238px) {
+    #binary {
+        margin-left:40%;
+
+        -webkit-transform:scale(1.85,1.85);
+           -moz-transform:scale(1.85,1.85);
+             -o-transform:scale(1.85,1.85);
+                transform:scale(1.85,1.85);
+    }
+
+
+    #binary.rotated {
+        margin-top:14%;
+
+        -webkit-transform:rotate(90deg) scale(2.85,2.85);
+           -moz-transform:rotate(90deg) scale(2.85,2.85);
+             -o-transform:rotate(90deg) scale(2.85,2.85);
+                transform:rotate(90deg) scale(2.85,2.85);
+    }
+
+    #active {margin-left:15px;margin-top:-20px;}
+}
+
