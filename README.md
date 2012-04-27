@@ -6,6 +6,8 @@
 
 ## In Action
 
+tim-pietrusky.de/lab/binary-clock_
+
 ![in action](http://tim-pietrusky.de/img/pinky_binary_clock_preview.png)
 
 ## License
