@@ -12,4 +12,4 @@ http://tim-pietrusky.de/lab/binary-clock
 
 ## License
 
-Dual-licensed under LGPL and EPL. And free for all, so use it as you like.
+Licensed under [VVL 1.33b7](http://tim-pietrusky.de/license) which means this **work** is free for all, so use it as you like.
